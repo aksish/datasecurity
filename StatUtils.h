@@ -10,7 +10,7 @@
 #include <stdio.h>
 #include "FileUtils.h"
 
-int * countDistributionOf40000Words() {
+int *countDistributionOf40000Words() {
 
     /*
      * Ref: https://www.math.cornell.edu/~mec/2003-2004/cryptography/subs/frequencies.html
@@ -75,9 +75,9 @@ float correlation(int *dataX, int dataXlen, int *dataY, int dataYlen) {
            / (sqrt(upto * ExSq - Ex * Ex) * sqrt(upto * EySq - Ey * Ey));
 }
 
-int * getFrequencyENG(char *msgFileName) {
+int *getFrequencyENG(char *msgFileName) {
 
-    int *eng = malloc(sizeof(int) * 27), j, upper =65, lower = 97, i, l;
+    int *eng = malloc(sizeof(int) * 27), j, upper = 65, lower = 97, i, l;
 
     for (j = 0; j < 27; j++) {
         eng[j] = 0;
@@ -135,10 +135,10 @@ float psi(char *msgFileName) {
 
     int *eng = getFrequencyENG(msgFileName), i;
 
-    float psi = 0.0f, N = (float)eng[26];
+    float psi = 0.0f, N = (float) eng[26];
     for (i = 0; i < 26; i++) {
 
-        psi += eng[i]/N * eng[i]/N;
+        psi += eng[i] / N * eng[i] / N;
     }
 
     return psi;
@@ -147,11 +147,11 @@ float psi(char *msgFileName) {
 float phi(char *msgFileName) {
 
     int *eng = getFrequencyENG(msgFileName), i;
-    float phi = 0.0f, N = (float)eng[26];
+    float phi = 0.0f, N = (float) eng[26];
 
     for (i = 0; i < 26; i++) {
-        float freq = (float)eng[i]/N;
-        phi += freq*(freq - 1/N);
+        float freq = (float) eng[i] / N;
+        phi += freq * (freq - 1 / N);
     }
 
     return phi;
@@ -159,15 +159,73 @@ float phi(char *msgFileName) {
 
 float chi(char *msgFileName) {
 
-    int *eng = getFrequencyENG(msgFileName), i,  *engExpected = countDistributionOf40000Words();
+    int *eng = getFrequencyENG(msgFileName), i, *engExpected = countDistributionOf40000Words();
 
     float temp = 0.0f;
     for (i = 0; i < 26; i++) {
 
-        temp += (float)eng[i] * engExpected[i];
+        temp += (float) eng[i] * engExpected[i];
     }
 
     return temp / (eng[26] * engExpected[26]);
+
+}
+
+void check_transposition_matrix(char msgFileName) {
+
+    int i, j;
+
+}
+
+int get_index_adfgvx(char c, char arr[]) {
+
+    for (int i = 0; i < 6; i++) {
+        if (c == arr[i]) {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
+char *decode_adfgvx(char *msgFileName) {
+
+    char index_lower[6] = {'a', 'd', 'f', 'g', 'v', 'x'};
+    char index_upper[6] = {'A', 'D', 'F', 'G', 'V', 'X'};
+    char adfgvx[6][6] = {
+            {'c', 'v', 'l', 'p', '2', 'q'},
+            {'d', 'b', 'j', '4', '3', 'r'},
+            {'a', 't', '5', 'e', 's', 'y'},
+            {'k', 'w', 'f', 'i', 'z', '9'},
+            {'8', 'g', '6', 'o', '0', 'x'},
+            {'l', '7', 'm', 'h', 'n', 'u'}
+    };
+
+    FILE *FP;
+    FP = getFileREADER(msgFileName);
+
+    FILE *FWP;
+    FWP = getFileWRITER("decrypted.txt");
+
+    char row;
+    while ((row = fgetc(FP)) != EOF) {
+
+        char column = fgetc(FP);
+
+        int r_index = get_index_adfgvx(row, index_lower);
+        if (r_index < 0) {
+            r_index = get_index_adfgvx(row, index_upper);
+        }
+
+        int c_index = get_index_adfgvx(column, index_lower);
+        if (c_index < 0) {
+            get_index_adfgvx(column, index_upper);
+        }
+
+        if( r_index>=0 && c_index>=0 ){
+            fputc(adfgvx[r_index][c_index], FWP);
+        }
+    }
 
 }
 
