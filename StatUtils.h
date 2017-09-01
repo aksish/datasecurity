@@ -157,7 +157,7 @@ float phi(char *msgFileName) {
     int i;
     for (i = 0; i < 26; i++) {
 
-        phi += (float)eng[i]/eng[26] * (eng[i]/eng[26] - 1 / 26);
+        phi += (float)eng[i]/eng[26] * (eng[i]/eng[26] - 1 / eng[26]);
     }
 
     return phi;
