@@ -8,6 +8,6 @@ int main(int arlen, char **args) {
     printf("Phi Value: %f", pHi);
 
     float pSi = psi(args[1]);
-    printf("Phi Value: %f", pSi);
+    printf("Psi Value: %f", pSi);
     return 0;
 }
