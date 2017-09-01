@@ -77,14 +77,11 @@ float correlation(int *dataX, int dataXlen, int *dataY, int dataYlen) {
 
 int * getFrequencyENG(char *msgFileName) {
 
-    int *eng = malloc(sizeof(int) * 27);
-    int j;
+    int *eng = malloc(sizeof(int) * 27), j, upper =65, lower = 97, i, l;
 
     for (j = 0; j < 27; j++) {
         eng[j] = 0;
     }
-
-    int upper = 65, lower = 97, i, l;
 
     FILE *FP;
     FP = getFileREADER(msgFileName);
@@ -115,10 +112,9 @@ int * getFrequencyENG(char *msgFileName) {
 
 float indexOfCoincidenceENG_kappa(char *msgFileName) {
 
-    int *eng = getFrequencyENG(msgFileName);
+    int *eng = getFrequencyENG(msgFileName), l = 0;
 
     float Ef = 0.0f, EfFMinusOne = 0.0f;
-    int l = 0;
     for (l = 0; l < 26; l++) {
 
         Ef += eng[l];
@@ -137,13 +133,12 @@ float indexOfCoincidenceENG(char *msgFileName) {
 
 float psi(char *msgFileName) {
 
-    int *eng = getFrequencyENG(msgFileName);
+    int *eng = getFrequencyENG(msgFileName), i;
 
-    float psi = 0.0f;
-    int i;
+    float psi = 0.0f, N = (float)eng[26];
     for (i = 0; i < 26; i++) {
 
-        psi += (float)eng[i]/eng[26] * eng[i]/eng[26];
+        psi += eng[i]/N * eng[i]/N;
     }
 
     return psi;
@@ -151,13 +146,12 @@ float psi(char *msgFileName) {
 
 float phi(char *msgFileName) {
 
-    int *eng = getFrequencyENG(msgFileName);
+    int *eng = getFrequencyENG(msgFileName), i;
+    float phi = 0.0f, N = (float)eng[26];
 
-    float phi = 0.0f;
-    int i;
     for (i = 0; i < 26; i++) {
-
-        phi += (float)eng[i]/eng[26] * (eng[i]/eng[26] - 1 / eng[26]);
+        float freq = (float)eng[i]/N;
+        phi += freq*(freq - 1/N);
     }
 
     return phi;
@@ -165,12 +159,9 @@ float phi(char *msgFileName) {
 
 float chi(char *msgFileName) {
 
-    int *eng = getFrequencyENG(msgFileName);
-
-    int *engExpected = countDistributionOf40000Words();
+    int *eng = getFrequencyENG(msgFileName), i,  *engExpected = countDistributionOf40000Words();
 
     float temp = 0.0f;
-    int i;
     for (i = 0; i < 26; i++) {
 
         temp += (float)eng[i] * engExpected[i];

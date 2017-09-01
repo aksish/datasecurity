@@ -4,7 +4,10 @@
 int main(int arlen, char **args) {
     printf("Running...\n");
 
-    float p = psi(args[1]);
-    printf("PSI Value: %f", p);
+    float pHi = phi(args[1]);
+    printf("Phi Value: %f", pHi);
+
+    float pSi = psi(args[1]);
+    printf("Phi Value: %f", pSi);
     return 0;
 }
