@@ -1,0 +1,3 @@
+"C:\Program Files\JetBrains\CLion 2017.2.2\bin\cmake\bin\cmake.exe" -E remove -f CMakeFiles\datasecurity.dir/objects.a
+C:\MinGW\bin\ar.exe cr CMakeFiles\datasecurity.dir/objects.a @CMakeFiles\datasecurity.dir\objects1.rsp
+C:\MinGW\bin\gcc.exe -g   -Wl,--whole-archive CMakeFiles\datasecurity.dir/objects.a -Wl,--no-whole-archive  -o datasecurity.exe -Wl,--out-implib,libdatasecurity.dll.a -Wl,--major-image-version,0,--minor-image-version,0 @CMakeFiles\datasecurity.dir\linklibs.rsp

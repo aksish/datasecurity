@@ -1,0 +1,30 @@
+#IncludeRegexLine: ^[ 	]*[#%][ 	]*(include|import)[ 	]*[<"]([^">]+)([">])
+
+#IncludeRegexScan: ^.*$
+
+#IncludeRegexComplain: ^$
+
+#IncludeRegexTransform: 
+
+D:/idea projects/clion projects/datasecurity/FileUtils.h
+stdio.h
+-
+stdlib.h
+-
+
+D:/idea projects/clion projects/datasecurity/StatUtils.h
+math.h
+-
+malloc.h
+-
+stdio.h
+-
+FileUtils.h
+D:/idea projects/clion projects/datasecurity/FileUtils.h
+
+D:/idea projects/clion projects/datasecurity/main.c
+stdio.h
+-
+StatUtils.h
+D:/idea projects/clion projects/datasecurity/StatUtils.h
+
