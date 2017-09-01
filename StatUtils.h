@@ -102,9 +102,9 @@ int * getFrequencyENG(char *msgFileName) {
     }
 
     for (l = 0; l < 26; l++) {
-        printf("[%c : %d]\n", l + 65, eng[l]);
+        printf("[%c : %d], ", l + 65, eng[l]);
     }
-    printf("SUM : %d\n", eng[26]);
+    printf("\nSUM : %d\n", eng[26]);
     printf("-------------------\n");
 
     return eng;
