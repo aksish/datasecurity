@@ -11,14 +11,14 @@
 
 FILE *getFileREADER(char *fileName) {
 
-    printf("\n ### Reading File: %s ### \n", fileName);
+    printf(" [R] Reading File: %s \n", fileName);
 
     FILE *FP;
     FP = fopen(fileName, "r");
 
     if(FP==NULL){
 
-        printf("Error opening File.\n");
+        printf(" [E] Error opening File.\n");
         return NULL;
     }
 
@@ -27,14 +27,14 @@ FILE *getFileREADER(char *fileName) {
 
 FILE *getFileWRITER(char *fileName) {
 
-    printf("\nReading File: %s\n", fileName);
+    printf("\n [W] Writing to File: %s\n", fileName);
 
     FILE *FP;
     FP = fopen(fileName, "w");
 
     if(FP==NULL){
 
-        printf("Error opening File.");
+        printf("[E] Error opening File. \n");
         return NULL;
     }
 

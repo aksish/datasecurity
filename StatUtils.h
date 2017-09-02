@@ -102,11 +102,11 @@ int *getFrequencyENG(char *msgFileName) {
     }
 
     for (l = 0; l < 26; l++) {
-        printf("[%c : %d], ", l + 65, eng[l]);
+        printf("%c:%d ", l + 65, eng[l]);
     }
-    printf("\nSUM : %d\n", eng[26]);
-    printf("-------------------\n");
+    printf("\n---[Total Count: %d]---\n", eng[26]);
 
+    fclose(FP);
     return eng;
 }
 
@@ -168,64 +168,6 @@ float chi(char *msgFileName) {
     }
 
     return temp / (eng[26] * engExpected[26]);
-
-}
-
-void check_transposition_matrix(char msgFileName) {
-
-    int i, j;
-
-}
-
-int get_index_adfgvx(char c, char arr[]) {
-
-    for (int i = 0; i < 6; i++) {
-        if (c == arr[i]) {
-            return i;
-        }
-    }
-
-    return -1;
-}
-
-char *decode_adfgvx(char *msgFileName) {
-
-    char index_lower[6] = {'a', 'd', 'f', 'g', 'v', 'x'};
-    char index_upper[6] = {'A', 'D', 'F', 'G', 'V', 'X'};
-    char adfgvx[6][6] = {
-            {'c', 'v', 'l', 'p', '2', 'q'},
-            {'d', 'b', 'j', '4', '3', 'r'},
-            {'a', 't', '5', 'e', 's', 'y'},
-            {'k', 'w', 'f', 'i', 'z', '9'},
-            {'8', 'g', '6', 'o', '0', 'x'},
-            {'l', '7', 'm', 'h', 'n', 'u'}
-    };
-
-    FILE *FP;
-    FP = getFileREADER(msgFileName);
-
-    FILE *FWP;
-    FWP = getFileWRITER("decrypted.txt");
-
-    char row;
-    while ((row = fgetc(FP)) != EOF) {
-
-        char column = fgetc(FP);
-
-        int r_index = get_index_adfgvx(row, index_lower);
-        if (r_index < 0) {
-            r_index = get_index_adfgvx(row, index_upper);
-        }
-
-        int c_index = get_index_adfgvx(column, index_lower);
-        if (c_index < 0) {
-            get_index_adfgvx(column, index_upper);
-        }
-
-        if( r_index>=0 && c_index>=0 ){
-            fputc(adfgvx[r_index][c_index], FWP);
-        }
-    }
 
 }
 
