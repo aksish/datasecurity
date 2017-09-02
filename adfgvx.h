@@ -99,18 +99,18 @@ void columnar_transposition_attack(char *cipherSrcFile) {
                 strcpy(new_cipher_file_name, cipherSrcFile);
                 strcat(new_cipher_file_name, "TEMP");
 
-                FILE *FP_Decoded = getFileWRITER(new_cipher_file_name);
+                FILE *FP_NEW = getFileWRITER(new_cipher_file_name);
                 for (m = 0; m < j; m++) {
                     for (n = 0; n < i; n++) {
                         int c = (int) to_permute[n][m];
                         if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) {
 
-                            fputc(c, FP_Decoded);
+                            fputc(c, FP_NEW);
                         }
                     }
                 }
 
-                fclose(FP_Decoded);
+                fclose(FP_NEW);
                 fclose(FP);
 
                 char *decoded_file = decode_adfgvx(new_cipher_file_name);
