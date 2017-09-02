@@ -16,7 +16,7 @@ int main(int arlen, char **args) {
     /*
      * Redirect to file.
      */
-    freopen("ADFGVX_assignment.LOG", "a+", stdout);
+    freopen("OUTPUT_LOG_ADFGVX_assignment2.log", "a+", stdout);
     columnar_transposition_attack(args[1]);
 
     return 0;

@@ -35,7 +35,7 @@ char *decode_adfgvx(char *msgFileName) {
     };
     char *decoded_file;
     strcpy(decoded_file, msgFileName);
-    strcat(decoded_file, "_adfgvx.decrypted");
+    strcat(decoded_file, ".MESSAGE");
 
     FILE *FP;
     FP = getFileREADER(msgFileName);
@@ -95,9 +95,8 @@ void columnar_transposition_attack(char *cipherSrcFile) {
                     l++;
                 }
 
-                char new_cipher_file_name[50];
-                strcpy(new_cipher_file_name, cipherSrcFile);
-                strcat(new_cipher_file_name, "TEMP");
+                char new_cipher_file_name[100];
+                snprintf(new_cipher_file_name, sizeof(char) * 100, "%s-%iX%i-CIPHER", cipherSrcFile, i, j);
 
                 FILE *FP_NEW = getFileWRITER(new_cipher_file_name);
                 for (m = 0; m < j; m++) {
