@@ -8,6 +8,7 @@
 #include <mem.h>
 #include "FileUtils.h"
 #include "StatUtils.h"
+#include "ctype.h"
 
 
 int get_index_adfgvx(char c, char arr[]) {
@@ -20,6 +21,7 @@ int get_index_adfgvx(char c, char arr[]) {
 
     return -1;
 }
+
 
 char *decode_adfgvx(char *msgFileName) {
 
@@ -65,6 +67,28 @@ char *decode_adfgvx(char *msgFileName) {
     fclose(FP);
     fclose(FWP);
     return decoded_file;
+}
+
+void strip_non_alpha(char *file_name) {
+
+    FILE *FP;
+    FP = getFileREADER(file_name);
+
+    char *dest_file;
+    strcpy(dest_file, file_name);
+    strcat(dest_file, ".stripped");
+    FILE *FWP;
+    FWP = getFileWRITER(dest_file);
+
+    char c;
+    while ((c = fgetc(FP)) != EOF) {
+
+        if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) {
+            fputc(tolower(c), FWP);
+        }
+    }
+    fclose(FP);
+    fclose(FWP);
 }
 
 void columnar_transposition_attack(char *cipherSrcFile) {
