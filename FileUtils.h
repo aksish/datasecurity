@@ -11,12 +11,10 @@
 
 FILE *getFileREADER(char *fileName) {
 
-    printf(" [R] Reading File: %s \n", fileName);
-
     FILE *FP;
     FP = fopen(fileName, "r");
 
-    if(FP==NULL){
+    if (FP == NULL) {
 
         printf(" [E] Error opening File.\n");
         return NULL;
@@ -27,18 +25,25 @@ FILE *getFileREADER(char *fileName) {
 
 FILE *getFileWRITER(char *fileName) {
 
-    printf("\n [W] Writing to File: %s\n", fileName);
-
     FILE *FP;
     FP = fopen(fileName, "w");
 
-    if(FP==NULL){
+    if (FP == NULL) {
 
         printf("[E] Error opening File. \n");
         return NULL;
     }
 
     return FP;
+}
+
+int get_total_char_count(char *file_name) {
+    FILE *FP = getFileREADER(file_name);
+    char ch = '\0';
+    int N = 0;
+    while ((ch = fgetc(FP)) != EOF) { N++; }
+    fclose(FP);
+    return N;
 }
 
 #endif //DATASECURITY_FILEUTILS_H

@@ -117,19 +117,23 @@ int **get_adfgvx_frequency(char *file_name) {
         }
     }
 
+//    int q =0;
+//    for(q=0;q<36;q++){
+//        printf("%c%c %d\n",freq[q][0],freq[q][1],freq[q][2]);
+//    }
+
+    fclose(FP);
     return freq;
 }
 
-float psi_adfgvx(char *msgFileName) {
 
-    int **freq = get_adfgvx_frequency(msgFileName), i = 0, N = 0;
 
-    for (i = 0; i < 36; i++) N += freq[i][2];
+float psi_adfgvx(char *msgFileName, int total_char_count) {
 
+    int **freq = get_adfgvx_frequency(msgFileName), i = 0;
     float psi = 0.0f;
-
     for (i = 0; i < 36; i++) {
-        float f = (float) freq[i][2] / N;
+        float f = (float) freq[i][2] / total_char_count;
         psi += f * f;
     }
     return psi;
@@ -137,18 +141,48 @@ float psi_adfgvx(char *msgFileName) {
 
 void columnar_transposition_attack(char *cipherSrcFile) {
 
-    int *freq = getFrequencyENG(cipherSrcFile), charCount = freq[26], i, j;
+    int charCount = get_total_char_count(cipherSrcFile), i, j;
 
     for (i = 1; i <= charCount; i++) {
 
         for (j = 1; j <= charCount; j++) {
-
-            int checker = ceil((double) i * j);
-
+            int checker =  i * j;
             if (checker >= charCount && checker <= charCount * 2) {
+                char to_permute[i][j], ch;
+                int a = 0, b = 0, k = 0, l = 0, m, n;
+                for (a = 0; a < i; a++) for (b = 0; b < j; b++) to_permute[a][b] = '\0';
 
-                //Todo
+                FILE *FP = getFileREADER(cipherSrcFile);
+                while ((ch = fgetc(FP)) != EOF) {
+                    if (l > (j - 1)) {
+                        k++;
+                        l = 0;
+                    }
+                    to_permute[k][l] = ch;
+                    l++;
+                }
 
+                char new_cipher_file_name[100];
+                snprintf(new_cipher_file_name, sizeof(char) * 100, "%s-%iX%i-CIPHER", cipherSrcFile, i, j);
+
+                FILE *FP_NEW = getFileWRITER(new_cipher_file_name);
+                for (m = 0; m < j; m++) {
+                    for (n = 0; n < i; n++) {
+                        int c = (int) to_permute[n][m];
+                        if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) {
+
+                            fputc(c, FP_NEW);
+                        }
+                    }
+                }
+
+                fclose(FP_NEW);
+                fclose(FP);
+
+                float psiValue = psi_adfgvx(new_cipher_file_name,charCount);
+                if(psiValue<0.015) remove(new_cipher_file_name);
+                printf("PSI Value: %f\n", psiValue);
+//                exit(0);
             }
 
         }

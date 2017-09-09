@@ -16,14 +16,16 @@ int main(int arlen, char **args) {
     /*
      * Redirect to file.
      */
-//    freopen("AAA_OUTPUT_LOG_NEW_ADFGVX_assignment2.log", "a+", stdout);
+//      freopen("AAA_OUTPUT_LOG_NEW_ADFGVX_assignment2.log", "a", stdout);
 //    columnar_transposition_attack(args[1]);
 //    char *decoded = decode_adfgvx(args[1]);
 //    float psiV = psi(decoded);
 //
 //    printf("\nPSI Value: %f", psiV);
 
-    float psi = psi_adfgvx(args[1]);
-    printf("Psi: ", psi);
+    int count = get_total_char_count(args[1]);
+//    float psi = psi_adfgvx(args[1],count);
+//    printf("Original PSI: %f",psi);
+    columnar_transposition_attack(args[1]);
     return 0;
 }
