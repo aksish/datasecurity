@@ -23,18 +23,11 @@ int get_index_adfgvx(char c, char arr[]) {
 }
 
 
-char *decode_adfgvx(char *msgFileName) {
+char *decode_adfgvx(char *msgFileName, char **adfgvx_table) {
 
     char index_lower[6] = {'a', 'd', 'f', 'g', 'v', 'x'};
     char index_upper[6] = {'A', 'D', 'F', 'G', 'V', 'X'};
-    char adfgvx[6][6] = {
-            {'c', 'v', 'l', 'p', '2', 'q'},
-            {'d', 'b', 'j', '4', '3', 'r'},
-            {'a', 't', '5', 'e', 's', 'y'},
-            {'k', 'w', 'f', 'i', 'z', '9'},
-            {'8', 'g', '6', 'o', '0', 'x'},
-            {'l', '7', 'm', 'h', 'n', 'u'}
-    };
+
     char *decoded_file;
     strcpy(decoded_file, msgFileName);
     strcat(decoded_file, ".MESSAGE");
@@ -61,7 +54,7 @@ char *decode_adfgvx(char *msgFileName) {
         }
 
         if (r_index >= 0 && c_index >= 0) {
-            fputc(adfgvx[r_index][c_index], FWP);
+            fputc(adfgvx_table[r_index][c_index], FWP);
         }
     }
     fclose(FP);
@@ -69,7 +62,7 @@ char *decode_adfgvx(char *msgFileName) {
     return decoded_file;
 }
 
-void strip_non_alpha(char *file_name) {
+char *strip_non_alpha(char *file_name) {
 
     FILE *FP;
     FP = getFileREADER(file_name);
@@ -89,6 +82,57 @@ void strip_non_alpha(char *file_name) {
     }
     fclose(FP);
     fclose(FWP);
+    return dest_file;
+}
+
+int **get_adfgvx_frequency(char *file_name) {
+
+    FILE *FP = getFileREADER(file_name);
+    /*
+     * Initialize with 36 combinations.
+     */
+
+    int **freq, i, j, k = 0, f = 0;
+    freq = malloc(sizeof(int) * 36);
+    for (f = 0; f < 36; f++) freq[f] = malloc(sizeof(int) * 3);
+
+    char adfgvx[6] = {'a', 'd', 'f', 'g', 'v', 'x'}, m;
+
+    for (i = 0; i < 6; i++) {
+        for (j = 0; j < 6; j++) {
+            freq[k][0] = adfgvx[i];
+            freq[k][1] = adfgvx[j];
+            freq[k][2] = 0;
+            k++;
+        }
+    }
+    char c, c1;
+    while ((c = fgetc(FP)) != EOF) {
+        c1 = fgetc(FP);
+        for (m = 0; m < 36; m++) {
+            char cx = freq[m][0], cy = freq[m][1];
+            if (c == cx && c1 == cy) {
+                freq[m][2] = freq[m][2] + 1;
+            }
+        }
+    }
+
+    return freq;
+}
+
+float psi_adfgvx(char *msgFileName) {
+
+    int **freq = get_adfgvx_frequency(msgFileName), i = 0, N = 0;
+
+    for (i = 0; i < 36; i++) N += freq[i][2];
+
+    float psi = 0.0f;
+
+    for (i = 0; i < 36; i++) {
+        float f = (float) freq[i][2] / N;
+        psi += f * f;
+    }
+    return psi;
 }
 
 void columnar_transposition_attack(char *cipherSrcFile) {
@@ -103,43 +147,8 @@ void columnar_transposition_attack(char *cipherSrcFile) {
 
             if (checker >= charCount && checker <= charCount * 2) {
 
-                printf(" #### Trying: %d by %d \n", i, j);
+                //Todo
 
-                char to_permute[i][j], ch;
-                int a = 0, b = 0, k = 0, l = 0, m, n;
-                for (a = 0; a < i; a++) for (b = 0; b < j; b++) to_permute[a][b] = '\0';
-
-                FILE *FP = getFileREADER(cipherSrcFile);
-                while ((ch = fgetc(FP)) != EOF) {
-                    if (l > (j - 1)) {
-                        k++;
-                        l = 0;
-                    }
-                    to_permute[k][l] = ch;
-                    l++;
-                }
-
-                char new_cipher_file_name[100];
-                snprintf(new_cipher_file_name, sizeof(char) * 100, "%s-%iX%i-CIPHER", cipherSrcFile, i, j);
-
-                FILE *FP_NEW = getFileWRITER(new_cipher_file_name);
-                for (m = 0; m < j; m++) {
-                    for (n = 0; n < i; n++) {
-                        int c = (int) to_permute[n][m];
-                        if ((c >= 65 && c <= 90) || (c >= 97 && c <= 122)) {
-
-                            fputc(c, FP_NEW);
-                        }
-                    }
-                }
-
-                fclose(FP_NEW);
-                fclose(FP);
-
-                char *decoded_file = decode_adfgvx(new_cipher_file_name);
-                float psiValue = psi(decoded_file);
-                printf("PSI Value: %f\n", psiValue);
-                printf("-------------------------------------------------------------------------\n");
             }
 
         }
