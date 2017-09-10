@@ -101,10 +101,10 @@ int *getFrequencyENG(char *msgFileName) {
         }
     }
 
-    for (l = 0; l < 26; l++) {
-        printf("%c:%d ", l + 65, eng[l]);
-    }
-    printf("\n---[Total Count: %d]---\n", eng[26]);
+//    for (l = 0; l < 26; l++) {
+//        printf("%c:%d ", l + 65, eng[l]);
+//    }
+//    printf("\n---[Total Count: %d]---\n", eng[26]);
 
     fclose(FP);
     return eng;

@@ -23,9 +23,11 @@ int main(int arlen, char **args) {
 //
 //    printf("\nPSI Value: %f", psiV);
 
-    int count = get_total_char_count(args[1]);
+//    int count = get_total_char_count(args[1]);
 //    float psi = psi_adfgvx(args[1],count);
 //    printf("Original PSI: %f",psi);
-    columnar_transposition_attack(args[1]);
+//  columnar_transposition_attack(args[1]);
+    tyr_3boat_txt(args[1]);
+//    strip_non_alpha(args[1]);
     return 0;
 }

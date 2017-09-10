@@ -119,21 +119,20 @@ int **get_adfgvx_frequency(char *file_name) {
 
 //    int q =0;
 //    for(q=0;q<36;q++){
-//        printf("%c%c %d\n",freq[q][0],freq[q][1],freq[q][2]);
+//        printf("%c%c:%d ",freq[q][0],freq[q][1],freq[q][2]);
 //    }
-
+//    printf("\n");
     fclose(FP);
     return freq;
 }
 
 
-
-float psi_adfgvx(char *msgFileName, int total_char_count) {
+float psi_adfgvx(char *msgFileName, int total_count) {
 
     int **freq = get_adfgvx_frequency(msgFileName), i = 0;
     float psi = 0.0f;
     for (i = 0; i < 36; i++) {
-        float f = (float) freq[i][2] / total_char_count;
+        float f = (float) freq[i][2] / total_count;
         psi += f * f;
     }
     return psi;
@@ -146,7 +145,7 @@ void columnar_transposition_attack(char *cipherSrcFile) {
     for (i = 1; i <= charCount; i++) {
 
         for (j = 1; j <= charCount; j++) {
-            int checker =  i * j;
+            int checker = i * j;
             if (checker >= charCount && checker <= charCount * 2) {
                 char to_permute[i][j], ch;
                 int a = 0, b = 0, k = 0, l = 0, m, n;
@@ -179,13 +178,44 @@ void columnar_transposition_attack(char *cipherSrcFile) {
                 fclose(FP_NEW);
                 fclose(FP);
 
-                float psiValue = psi_adfgvx(new_cipher_file_name,charCount);
-                if(psiValue<0.015) remove(new_cipher_file_name);
+                float psiValue = psi_adfgvx(new_cipher_file_name, get_total_char_count(new_cipher_file_name)/2);
+
+                char new_new_cipher_file[100];
+                snprintf(new_new_cipher_file, sizeof(char) * 100, "%f-%s", psiValue, new_cipher_file_name);
+                if (psiValue < 0.04) remove(new_cipher_file_name);
+                else rename(new_cipher_file_name, new_new_cipher_file);
                 printf("PSI Value: %f\n", psiValue);
-//                exit(0);
             }
 
         }
+    }
+
+
+}
+
+/*
+ * Takes 1099 length substring and calculates psi
+ */
+void tyr_3boat_txt(char *file_name) {
+    FILE *FP = getFileREADER(file_name);
+    char *write_file = "3boat10.trial";
+    FILE *FW = getFileWRITER(write_file);
+    int count = 0;
+    char ch;
+    int offset = 0;
+    while ((ch = fgetc(FP)) != EOF) {
+        if (count % 1099 == 0 && count > 0) {
+            fclose(FW);
+            float psi_value = psi(write_file);
+            if(psi_value>0.06 && psi_value<0.061)
+                printf("PSI : %f, Offset:%d \n", psi_value, offset);
+            offset += 1;
+            fseek(FP, offset, SEEK_SET);
+            ch = fgetc(FP);
+            FW = getFileWRITER(write_file);
+        }
+        fputc(ch, FW);
+        count++;
     }
 
 }
